@@ -1,0 +1,123 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
+}
+
+.product-item {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.product-item img {
+  max-width: 100%;
+}
+
+.product-item h2 {
+  font-size: 18px;
+  margin-top: 10px;
+}
+
+.product-item p {
+  font-size: 14px;
+}
+
+.product-item button {
+  transition: 0.5s all;
+  background-color: #ffd000;
+  color: #fff;
+  border-radius: 5px;
+  border: none;
+  padding: 8px 16px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.product-item button:hover {
+  background-color: #d9ff00;
+}
+
+/* Categories styles */
+h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.categories {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.categories div {
+  width: calc(33.33% - 10px);
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.categories img {
+  max-width: 100%;
+  margin-bottom: 10px;
+}
+
+.cart {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 20px;
+}
+
+.favorites {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.cart h2,
+.favorites h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.cart-item,
+.favorite-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #ccc;
+}
+
+.cart-item:last-child,
+.favorite-item:last-child {
+  border-bottom: none;
+}
+
+.cart-item p,
+.favorite-item p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.cart-item button,
+.favorite-item button {
+  background-color: #ff4c4c;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.cart-item button:hover,
+.favorite-item button:hover {
+  background-color: #d63434;
+}
