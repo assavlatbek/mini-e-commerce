@@ -1,26 +1,33 @@
+import { useContext } from 'react';
 import PropTypes from 'prop-types';
 import Product from './Product';
+import { CartContext } from '../App';
 
-function ProductList({ products, addToCart, toggleFavorite }) {
+function ProductList({ products }) {
+    const { favorites } = useContext(CartContext);
     return (
-        <div className="row">
-            {products.map((product) => (
-                <div className="col-md-4 col-12 col-sm-6" key={product.id}>
-                    <Product
-                        product={product}
-                        addToCart={addToCart}
-                        toggleFavorite={toggleFavorite}
-                    />
-                </div>
-            ))}
-        </div>
+        <>
+            <h1>Products</h1>
+            <div className="as-row">
+                {products.map((product) => (
+                    <div className="product" key={product.id}>
+                        <div>
+                            <Product
+                                product={product}
+                                isFavorite={favorites.includes(product.id)}
+                            />
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </>
     );
 }
 
 ProductList.propTypes = {
     products: PropTypes.array.isRequired,
-    addToCart: PropTypes.func.isRequired,
-    toggleFavorite: PropTypes.func.isRequired,
+    getDiscountedProducts: PropTypes.func.isRequired,
+    getProductsByCategory: PropTypes.func.isRequired,
 };
 
 export default ProductList;

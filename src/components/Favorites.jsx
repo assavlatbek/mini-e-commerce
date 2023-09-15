@@ -1,24 +1,34 @@
+import { useContext } from 'react';
 import PropTypes from 'prop-types';
+import Card from './Card';
+import { products } from '../data/products';
+import { CartContext } from '../App';
 
-function Favorites({ favoriteProducts, products, toggleFavorite }) {
-    const favoriteItems = products.filter((product) => favoriteProducts.includes(product.id));
+function Favorites({ toggleFavorite }) {
+    const { favorites } = useContext(CartContext);
 
     return (
         <div className="favorites">
-            <h2>Favorites</h2>
-            {favoriteItems.map((item) => (
-                <div key={item.id} className="favorite-item">
-                    <p>{item.name}</p>
-                    <button onClick={() => toggleFavorite(item.id)}>Remove from Favorites</button>
+            <h2>Favorites ({favorites.length})</h2>
+            {favorites.length === 0 ? (
+                <p>You have no favorites yet.</p>
+            ) : (
+                <div className="as-row">
+                    {favorites.map((productId) => (
+                        <Card
+                            key={productId}
+                            product={products.find((product) => product.id === productId)}
+                            onToggleFavorite={toggleFavorite}
+                            isFavorite={favorites.includes(productId)}
+                        />
+                    ))}
                 </div>
-            ))}
+            )}
         </div>
     );
 }
 
 Favorites.propTypes = {
-    favoriteProducts: PropTypes.array.isRequired,
-    products: PropTypes.array.isRequired,
     toggleFavorite: PropTypes.func.isRequired,
 };
 

@@ -1,87 +1,95 @@
-import { useState, useEffect } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { products } from './data/products';
+import React, { useState, useEffect } from 'react';
 import Cart from './components/Cart';
 import Favorites from './components/Favorites';
 import ProductList from './components/ProductList';
+import { products } from './data/products';
+
+export const CartContext = React.createContext();
 
 function App() {
-  const [cartItems, setCartItems] = useState([]);
-  const [favoriteProducts, setFavoriteProducts] = useState([]);
-
+  const [cart, setCart] = useState([]);
+  const [favorites, setFavorites] = useState([]);
+  const [view, setView] = useState('Products')
   useEffect(() => {
-    const storedCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-    const storedFavorites = JSON.parse(localStorage.getItem('favoriteProducts')) || [];
-    setCartItems(storedCartItems);
-    setFavoriteProducts(storedFavorites);
+    // Load cart data from localStorage
+    const cartData = JSON.parse(localStorage.getItem('cart')) || [];
+    setCart(cartData);
+
+    // Load favorites data from localStorage
+    const favoritesData = JSON.parse(localStorage.getItem('favorites')) || [];
+    setFavorites(favoritesData);
   }, []);
 
-  const addToCart = (productId, quantity) => {
-    const productToAdd = products.find((product) => product.id === productId);
-    if (productToAdd) {
-      const existingCartItem = cartItems.find((item) => item.id === productId);
-      if (existingCartItem) {
-        // If the item is already in the cart, update its quantity
-        const updatedCart = cartItems.map((item) =>
-          item.id === productId ? { ...item, quantity } : item
-        );
-        setCartItems(updatedCart);
-        localStorage.setItem('cartItems', JSON.stringify(updatedCart));
-      } else {
-        // If it's a new item, add it to the cart with the given quantity
-        setCartItems([...cartItems, { ...productToAdd, quantity }]);
-        localStorage.setItem(
-          'cartItems',
-          JSON.stringify([...cartItems, { ...productToAdd, quantity }])
-        );
-      }
+  useEffect(() => {
+    // Save cart data to localStorage whenever it changes
+    localStorage.setItem('cart', JSON.stringify(cart));
+  }, [cart]);
+
+  useEffect(() => {
+    // Save favorites data to localStorage whenever it changes
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+  }, [favorites]);
+
+  const addToCart = (product) => {
+    const existingProduct = cart.find((item) => item.id === product.id);
+    if (existingProduct) {
+      const updatedCart = cart.map((item) =>
+        item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+      );
+      setCart(updatedCart);
+    } else {
+      setCart([...cart, { ...product, quantity: 1 }]);
     }
   };
+
   const removeFromCart = (productId) => {
-    const updatedCart = cartItems.filter((item) => item.id !== productId);
-    setCartItems(updatedCart);
-    localStorage.setItem('cartItems', JSON.stringify(updatedCart));
+    const updatedCart = cart.filter((item) => item.id !== productId);
+    setCart(updatedCart);
   };
 
   const toggleFavorite = (productId) => {
-    if (favoriteProducts.includes(productId)) {
-      const updatedFavorites = favoriteProducts.filter((id) => id !== productId);
-      setFavoriteProducts(updatedFavorites);
+    if (favorites.includes(productId)) {
+      const updatedFavorites = favorites.filter((id) => id !== productId);
+      setFavorites(updatedFavorites);
     } else {
-      setFavoriteProducts([...favoriteProducts, productId]);
+      setFavorites([...favorites, productId]);
     }
-    localStorage.setItem('favoriteProducts', JSON.stringify(favoriteProducts));
+  };
+
+  const getDiscountedProducts = () => {
+    return products.filter((product) => product.discount);
+  };
+
+  const getProductsByCategory = (category) => {
+    return products.filter((product) => product.category === category);
   };
 
 
   return (
-    <>
-      <header className='bg-light py-3 fixed-top shadow'>
+    <CartContext.Provider
+      value={{ cart, addToCart, removeFromCart, favorites, toggleFavorite }}
+    >
+      <header className='bg-light py-3 fixed-top as-navbar'>
         <nav className='container d-flex justify-content-between'>
-          <a className='nav-link fs-5' href='/'>Home</a>
-          <a className='nav-link fs-5' href='/cart'>Cart</a>
-          <a className='nav-link fs-5' href='/favorites'>Favorites</a>
+          <button className='non-button' onClick={() => setView('Products')}>Home</button>
+          <button className='non-button' onClick={() => setView('Cart')}>Cart ({cart.length})</button>
+          <button className='non-button' onClick={() => setView('Favorites')}>Favorites ({favorites.length})</button>
         </nav>
       </header>
-      <div style={{ marginBottom: '70px' }}></div>
-      <BrowserRouter>
-        <div className="container">
-          <Routes>
-            <Route path="/" element={<ProductList
-              products={products}
-              addToCart={addToCart}
-              toggleFavorite={toggleFavorite}
-            />} />
-            <Route path="/cart" element={<Cart cartItems={cartItems} removeFromCart={removeFromCart} quantity={cartItems.quantity} />} />
-            <Route path="/favorites" element={<Favorites
-              favoriteProducts={favoriteProducts}
-              products={products}
-              toggleFavorite={toggleFavorite}
-            />} />
-          </Routes>
-        </div>
-      </BrowserRouter>
-    </>
+      <div className="empty"></div>
+      <div className="container">
+        {view === 'Products' ? <ProductList
+          products={products}
+          getDiscountedProducts={getDiscountedProducts}
+          getProductsByCategory={getProductsByCategory}
+        /> : ''}
+        {view === 'Cart' ? <Cart /> : ''}
+        {view === 'Favorites' ? <Favorites /> : ''}
+      </div>
+      <footer className='mt-3 bg-light py-3' style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
+        <h3 className='text-center'>Savlatbek Abdullayev, &copy; 2023</h3>
+      </footer>
+    </CartContext.Provider>
   );
 }
 
