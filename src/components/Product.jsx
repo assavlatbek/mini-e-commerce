@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { CartContext } from '../App';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
-
 import 'react-lazy-load-image-component/src/effects/blur.css';
 
 function Product({ product }) {

@@ -3,6 +3,8 @@ import Cart from './components/Cart';
 import Favorites from './components/Favorites';
 import ProductList from './components/ProductList';
 import { products } from './data/products';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const CartContext = React.createContext();
 
@@ -32,6 +34,9 @@ function App() {
 
   const addToCart = (product) => {
     const existingProduct = cart.find((item) => item.id === product.id);
+    toast.success('Product added successfully!', {
+      position: toast.POSITION.TOP_RIGHT,
+    });
     if (existingProduct) {
       const updatedCart = cart.map((item) =>
         item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
@@ -45,14 +50,24 @@ function App() {
   const removeFromCart = (productId) => {
     const updatedCart = cart.filter((item) => item.id !== productId);
     setCart(updatedCart);
+    toast.error('Product removed successfully!', {
+      position: toast.POSITION.TOP_RIGHT,
+    });
   };
 
   const toggleFavorite = (productId) => {
     if (favorites.includes(productId)) {
       const updatedFavorites = favorites.filter((id) => id !== productId);
       setFavorites(updatedFavorites);
+      toast.error('Product removed successfully!', {
+        position: toast.POSITION.TOP_RIGHT,
+      });
     } else {
       setFavorites([...favorites, productId]);
+      toast.info('Product added successfully!', {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+
     }
   };
 
@@ -77,7 +92,7 @@ function App() {
         </nav>
       </header>
       <div className="empty"></div>
-      <div className="container">
+      <div className="container content">
         {view === 'Products' ? <ProductList
           products={products}
           getDiscountedProducts={getDiscountedProducts}
@@ -86,9 +101,10 @@ function App() {
         {view === 'Cart' ? <Cart /> : ''}
         {view === 'Favorites' ? <Favorites /> : ''}
       </div>
-      <footer className='mt-3 bg-light py-3' style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
+      <footer className='bg-light py-3' style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
         <h3 className='text-center'>Savlatbek Abdullayev, &copy; 2023</h3>
       </footer>
+      <ToastContainer />
     </CartContext.Provider>
   );
 }

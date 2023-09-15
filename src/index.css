@@ -85,6 +85,14 @@
   background: #d2c31d;
 }
 
+.content {
+  min-height: calc(100vh - 185px);
+}
+
+footer {
+  margin-top: 30px;
+}
+
 @media (max-width: 1000px) {
   .as-row {
     display: grid;
